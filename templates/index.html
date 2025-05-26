@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cyber Sentinel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("/static/background.jpg") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Courier New', monospace;
+            color: #00ff9f;
+            overflow: hidden;
+        }
+
+        .title {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+       .title span {
+            display: inline-block;
+            font-size: 44px;
+            font-weight: bold;
+            color: #00ff9f;
+            text-shadow: 0 0 20px #00ff9f;
+            background: black;
+            padding: 0px 0px;
+            box-shadow: 0 0 40px black;
+            border-radius: 10px;
+            
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 100px);
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 0 40px;
+            box-sizing: border-box;
+        }
+
+        .log-panel, .button-panel {
+            width: 300px;
+            height: 75%;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ff9f;
+            border-radius: 20px;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 0 0 30px #00ff9f44;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .center-content {
+            text-align: center;
+            width: 40%;
+        }
+
+        .floating-gif {
+            height: 300px;
+            animation: pulse 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px #00ffcc);
+            margin-left: -25px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        h2 {
+            color: #00ff9f;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 50px;
+            text-shadow: 0 0 10px #00ff9f;
+        }
+
+        .talk-btn, .log-btn {
+            display: block;
+            width: 90%;
+            margin: 15px auto;
+            padding: 14px 0;
+            font-size: 16px;
+            background-color: #001f1c;
+            color: #00ff9f;
+            border: 2px solid #00ff9f;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 6px #00ffa2;
+        }
+
+        .talk-btn:hover, .log-btn:hover {
+            background-color: #00ff9f;
+            color: #001f1c;
+            transform: scale(1.05);
+        }
+
+        .response-log {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            color: #00ff9f;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00ff9f;
+            border-radius: 0px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ffa2;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 20px;
+       }
+
+       .log-panel, .button-panel, .center-content {
+           width: 90%;
+           height: auto;
+       }
+
+      .floating-gif {
+          height: 240px;
+       }
+    }
+    </style>
+</head>
+<body>
+
+<input type="file" id="fileInput" style="display:none" />
+
+<div class="title"><span>Sentinel</span></div>
+
+<div class="container">
+    <!-- Left Panel -->
+    <div class="log-panel" id="log">
+        <h2>Response Log</h2>
+        <div id="logContent"></div>
+    </div>
+
+    <!-- Center Panel -->p
+    <div class="center-content">
+        <img src="{{ url_for('static', filename='face.gif') }}" class="floating-gif">
+    </div>
+
+    <!-- Right Panel -->
+    <div class="button-panel">
+        <h2>Commands</h2>
+        <button class="talk-btn">🎙️ Talk</button>
+        <a href="/logs"><button class="log-btn">📂 View Logs</button></a>
+        <button class="log-btn" id="stop-btn">🛑 Stop</button>
+    </div>
+</div>
+
+<script>
+    const talkBtn = document.querySelector('.talk-btn');
+    const logContent = document.getElementById('logContent');
+    const fileInput = document.getElementById('fileInput');
+    const stopBtn = document.getElementById("stop-btn");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript.toLowerCase();
+        addToLog("You: " + transcript);
+
+        if (transcript.includes("scan") || transcript.includes("virus")) {
+            speak("Please select a file to scan.");
+            fileInput.click();
+        } else {
+            sendToServer(transcript);
+        }
+    };
+
+    talkBtn.addEventListener('click', () => {
+        recognition.start();
+    });
+
+    stopBtn.addEventListener("click", () => {
+        window.speechSynthesis.cancel();
+        addToLog("🔇 Voice stopped.");
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            talkBtn.click();
+        }
+    });
+
+    fileInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            addToLog("You selected: " + file.name);
+            speak("Scanning file, please wait...");
+
+            fetch('/scan', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                addToLog("CyberSentinel: " + data.result);
+                speak(data.result);
+            });
+        }
+    });
+
+    function speak(text) {
+        const synth = window.speechSynthesis;
+        synth.cancel();
+
+        const chunks = text.match(/[^.!?]+[.!?]+/g) || [text];
+
+        chunks.forEach((chunk) => {
+            const utterance = new SpeechSynthesisUtterance(chunk.trim());
+            utterance.lang = /[\u0900-\u097F]/.test(chunk) ? 'hi-IN' : 'en-US';
+            synth.speak(utterance);
+        });
+    }
+
+    function sendToServer(message) {
+        fetch('/process', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const reply = data.response;
+            addToLog("CyberSentinel: " + reply);
+            const cleaned = reply.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            speak(cleaned);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            speak("Sorry, something went wrong.");
+        });
+    }
+
+    function addToLog(message) {
+        const entry = document.createElement('div');
+        entry.className = 'response-log';
+        entry.textContent = message;
+        logContent.appendChild(entry);
+        logContent.scrollTop = logContent.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
