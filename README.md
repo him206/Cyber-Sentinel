@@ -47,8 +47,11 @@ CyberSentinel supports both:
 - “Monitor traffic”
 - “Show system logs”
   …and many more!
-
+  
 ---
+
+📜 License
+MIT License
 
 ## 💻 Installation
 
@@ -56,7 +59,3 @@ CyberSentinel supports both:
 git clone https://github.com/your-username/CyberSentinel.git
 cd CyberSentinel
 pip install -r requirements.txt
-
---- 
-📜 License
-MIT License
