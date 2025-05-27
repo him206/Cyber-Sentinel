@@ -53,6 +53,8 @@ CyberSentinel supports both:
 📜 License
 MIT License
 
+---
+
 ## 💻 Installation
 
 ```bash
