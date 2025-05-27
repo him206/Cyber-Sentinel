@@ -35,9 +35,28 @@ CyberSentinel supports both:
 
 ---
 
+🔐 Supported Voice Commands
+
+- “Run Nmap”
+- “Check firewall”
+- “List open ports”
+- “Who is connected”
+- “Scan for vulnerabilities”
+- “Search Google for…” / “Open YouTube”
+- “Open Chrome”
+- “Monitor traffic”
+- “Show system logs”
+  …and many more!
+
+---
+
 ## 💻 Installation
 
 ```bash
 git clone https://github.com/your-username/CyberSentinel.git
 cd CyberSentinel
 pip install -r requirements.txt
+
+--- 
+📜 License
+MIT License
