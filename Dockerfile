@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0"]
+CMD ["gunicorn", "app.main:app", "--host", "0.0.0.0"]
