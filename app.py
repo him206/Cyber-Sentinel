@@ -194,4 +194,4 @@ def scan_file():
             return jsonify({'result': "❌ Failed to upload the file for scanning."})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
