@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 from langdetect import detect
-from gpt4all import GPT4All
 from dotenv import load_dotenv
 import subprocess
 import os
