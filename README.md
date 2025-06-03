@@ -15,6 +15,11 @@ CyberSentinel is a **AI-powered voice assistant** for cybersecurity operations b
 
 ---
 
+## Demo
+👉 [Live App on Render](https://cyber-sentinel-mplb.onrender.com)
+
+---
+
 ## 🎯 Use Cases
 
 - Cybersecurity training & education  
