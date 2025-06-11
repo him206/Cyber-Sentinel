@@ -63,6 +63,6 @@ MIT License
 ## 💻 Installation
 
 ```bash
-git clone https://github.com/your-username/CyberSentinel.git
+git clone https://github.com/him206/CyberSentinel.git
 cd CyberSentinel
 pip install -r requirements.txt
